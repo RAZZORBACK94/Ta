@@ -1,13 +1,11 @@
 import React from "react";
 
-class Kategori extends React.Component {
-  render() {
-    return (
-      <div>
-        <p>ini kategori</p>
+export default function Kategori() {
+  return (
+    <div>
+      <div className=" mt-40">
+        <h1>INI KATEGORI</h1>
       </div>
-    );
-  }
+    </div>
+  );
 }
-
-export default Kategori;
