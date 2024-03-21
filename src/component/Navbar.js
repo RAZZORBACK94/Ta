@@ -26,9 +26,13 @@ function Navbar() {
             </Link>
           </div>
           <div className="button">
+            <Link to="/Login">
             <button className="px-4 py-2 border border-sky-300 rounded-lg text-sky-300 font-semibold hover:bg-sky-300 hover:text-white">Login</button>
+            </Link>
             <span className=" text-2xl"> | </span>
+            <Link to="/Regis">
             <button className="px-4 py-2 bg-sky-300 rounded-lg font-semibold text-white hover:bg-sky-500 hover:text-white">Daftar</button>
+            </Link>
           </div>
         </div>
       </div>

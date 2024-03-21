@@ -54,7 +54,7 @@ export default function Beranda() {
         <div className=" text-black font-bold text-center text-xl pt-11">
           <p>Rekomendasi Nih Buat Kamu 🔥</p>
         </div>
-        <p className=" ml-[85%] text-gray-400 mt-4 font-medium text-md ">Lihat Semua</p>
+        <p className=" ml-[85%] text-gray-400 mt-4 font-medium text-md">Lihat Semua</p>
       </div>
       {/* Carosel Barang Wrapper*/}
       <div className=" mt-6">
