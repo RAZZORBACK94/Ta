@@ -27,6 +27,7 @@ export default function Barang() {
   return (
     <div>
       <div className=" flex">
+        
         {data.map((item, key) => (
           <div className=" mx-8 border rounded-lg shadow-lg w-56" key={key}>
             <img className=" text-center rounded-md object-contain w-full h-48 my-4" src={item.img} alt="image" />

@@ -2,13 +2,10 @@ import React, { useEffect , useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa";
 import { FaMinus } from "react-icons/fa";
+import { LuMapPin } from "react-icons/lu";
 
 
-// bagaimana cara menambahkan propert isChecked = false kedalam array data menggunakan function (tanpa mengubah array data secara langsung)
-
-
-
-export default function Keranjang() {
+export default function Kirim() {
 
   const data =[ 
     {
@@ -33,6 +30,7 @@ export default function Keranjang() {
   ]
 
   const [keranjang, setKeranjang] = useState(data);
+  const [alamat, setAlamat] = useState("Percobaan Data Untuk Alamat");
 
   const inc = (itemId) => {
     setKeranjang((prevKeranjang) =>
@@ -76,15 +74,19 @@ export default function Keranjang() {
         </button>
 
         {/* judul page */}
-        <p className=" text-5xl font-bold">Keranjang</p>
+        <p className=" text-5xl font-bold">Pengiriman</p>
 
         <div className="flex justify-between space-x-5">
           <form className="flex- flex-col space-y-5 w-full">
 
             {/* filter */}
-            <div className="flex justify-between px-5 py-2 rounded-lg shadow-lg">
-              <p className="font-bold text-base">Pilih Semua<span className=" text-slate-500">2</span></p>
-              <p className="font-bold text-base">Hapus</p>
+            <div className="flex flex-col space-y-5 px-5 py-2 rounded-lg shadow-lg">
+              <p className="font-bold text-base text uppercase text-slate-500">Alamat Pengiriman</p>
+              <p>{alamat}</p>
+              <div className="flex items-center space-x-5 rounded-xl border-2 hover:bg-slate-500 w-max px-4 py-1">
+                <LuMapPin/>
+                <p className="font-bold text-base">Ganti Alamat</p>
+              </div>
             </div>
 
             {/* isi keranjang */}
