@@ -45,7 +45,7 @@ export default function Bayar() {
 
 
     return(
-        <div className="flex justify-center items-center bg-black opacity-90 h-screen">
+        <div className=" absolute flex justify-center items-center bg-black opacity-90 h-screen w-screen">
             
             {/* page */}
             <div className=" flex flex-col space-y-5 p-5 bg-white rounded-2xl w-1/2">

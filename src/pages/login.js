@@ -1,8 +1,10 @@
 import React from "react";
 import loginImg from "../component/assets/login.jpeg";
 import google from "../component/assets/google.png";
-import { Link } from "react-router-dom";
 import axios from "axios";
+import { Link } from "react-router-dom";
+
+import { user } from "../component/data";
 
 class Login extends React.Component {
 
@@ -11,12 +13,38 @@ class Login extends React.Component {
     this.state = {
       nama_user: '',
       password_user: '',
+      loggedUser: []
     }
   }
 
   bind = (event) =>{
     this.setState({[event.target.name] : event.target.value})
   }
+  
+  // login = () => {
+
+  //   const {nama_user, password_user} = this.state;
+
+  //   console.log(nama_user,password_user);
+
+  //   const foundUser = user.find((userItem) => {
+  //     return userItem.nama_user === nama_user && userItem.passowrd_user === password_user;
+  //   })
+
+  //   if (foundUser && foundUser.role_user === "user") {
+
+  //     localStorage.setItem("user", JSON.stringify(foundUser))
+
+  //     window.location.href = '/';
+  //   } else if (foundUser && foundUser.role_user === "admin") {
+
+  //     localStorage.setItem("user", JSON.stringify(foundUser))
+
+  //     window.location.href = '/admin';
+  //   } else {
+  //     alert('username or password wrong')
+  //   }
+  // }
 
   login = () => {
     let url = "http://localhost:5000/auth/login";
