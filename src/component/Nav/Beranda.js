@@ -1,15 +1,25 @@
-import React from "react";
+import React,{useState,useEffect} from "react";
 import Carsel from "../assets/carosel.componet";
 import Barang from "../assets/barang.componet";
+import { buku } from "../data";
 import gambar from "../assets/Mask.png";
 
 let slide = [
   "https://cdn.gramedia.com/uploads/marketing/Gramedia.com_Super_Sale_Update_Storefront__wauto_h336.jpg",
   "https://cdn.gramedia.com/uploads/marketing/PO_Mommyclopedia_99_Resep_Mpasi_Storefront__wauto_h336.jpg",
-  "https://cdn.gramedia.com/uploads/marketing/Road_To_Anniversary_Gramedia_54_Tahun_Storefront_xJVDfmX__wauto_h336.jpg",
+  "https://cdn.gramedia.com/uploads/marketing/Road_To_Anniversary_Gramedia_54_Tahun_Storefront_xJVDfmX__wauto_h336.jpg"
 ];
 
 export default function Beranda() {
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const { nama_user } = JSON.parse(localStorage.getItem("user")) || {}; // Handle empty object
+
+    useEffect(() => {
+      const user = localStorage.getItem("user");
+      setIsLoggedIn(user !== null);
+    }, []);
   return (
     <div className="">
       {/* Image Slider / Carosel */}
@@ -20,6 +30,16 @@ export default function Beranda() {
           ))}
         </Carsel>
       </div>
+      {isLoggedIn ? 
+        ( 
+          <div className=" bg-slate-50 my-10 mx-56 p-5 rounded-lg shadow-lg ">
+            <p className=" text-4xl font-bold">Welcome {nama_user}</p>
+          </div>) 
+        : (
+          <div></div>
+          )
+      }
+      
       {/* icon category */}
       <div className=" mt-8">
         <div className=" bg-blue-100 mx-56 flex justify-around text-center font-medium">
@@ -54,12 +74,24 @@ export default function Beranda() {
         <div className=" text-black font-bold text-center text-xl pt-11">
           <p>Rekomendasi Nih Buat Kamu 🔥</p>
         </div>
-        <p className=" ml-[85%] text-gray-400 mt-4 font-medium text-md ">Lihat Semua</p>
+        <p className=" ml-[85%] text-gray-400 mt-4 font-medium text-md">Lihat Semua</p>
       </div>
       {/* Carosel Barang Wrapper*/}
       <div className=" mt-6">
         <div className=" mx-40">
-          <Barang />
+          <div className="flex">
+            {buku.map((item,index) => (
+                <Barang 
+                  buku ={item}
+                  cover = {item.cover}
+                  author = {item.author}
+                  title = {item.title}
+                  stok = {item.stok}
+                  softDisc = {item.softDisc}
+                  soft = {item.soft}
+                />
+            ))}
+          </div>
         </div>
         {/* line hr */}
         <div className=" my-14 font-bold text-black mx-36">
@@ -71,7 +103,19 @@ export default function Beranda() {
         <p className=" ml-[85%] text-gray-400 mt-2 font-medium text-md ">Lihat Semua</p>
         <div className=" ml-36 flex mt-4">
           <img className=" w-[20%] h-full mr-8" src={gambar} />
-          <Barang />
+          <div className="flex">
+            {buku.map((item,index) => (
+                <Barang 
+                  stok = {item.stok}
+                  buku ={item}
+                  cover = {item.cover}
+                  author = {item.author}
+                  title = {item.title}
+                  softDisc = {item.softDisc}
+                  soft = {item.soft}
+                />
+            ))}
+          </div>
         </div>
       </div>
     </div>

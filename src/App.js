@@ -1,13 +1,17 @@
-import { React } from "react";
+import {React } from "react";
+import "./App.css";
+import Ling from "./component/Nav/Ling";
 import Navbar from "./component/Navbar";
 import Footer from "./component/Footer";
-import "./App.css";
 
 function App() {
+
+
   return (
     <div>
-      <Navbar />
-      <Footer />
+      <Navbar/>
+      <Footer/>
+      
     </div>
   );
 }

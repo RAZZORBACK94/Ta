@@ -1,8 +1,22 @@
-import React from "react";
+import React, {useState,useEffect} from "react";
 import Ling from "./Nav/Ling";
 import { Link } from "react-router-dom";
 
 function Navbar() {
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const logout = () =>{
+
+    window.location.href = '/login'
+    localStorage.clear();
+  }
+
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    setIsLoggedIn(user !== null);
+  }, []); // Empty dependency array ensures useEffect runs only once
+  
   return (
     <div>
       <div className=" bg-white py-6 w-full top-0 fixed z-[100] shadow-lg">
@@ -25,10 +39,17 @@ function Navbar() {
               Keranjang
             </Link>
           </div>
-          <div className="button">
+          <div className={`button ${isLoggedIn ? 'hidden' : ''}`}>
+            <Link to="/Login">
             <button className="px-4 py-2 border border-sky-300 rounded-lg text-sky-300 font-semibold hover:bg-sky-300 hover:text-white">Login</button>
+            </Link>
             <span className=" text-2xl"> | </span>
+            <Link to="/Regis">
             <button className="px-4 py-2 bg-sky-300 rounded-lg font-semibold text-white hover:bg-sky-500 hover:text-white">Daftar</button>
+            </Link>
+          </div>
+          <div className={`button ${isLoggedIn ? '' : 'hidden'}`}>
+            <button className="px-4 py-2 border border-sky-300 rounded-lg text-sky-300 font-semibold hover:bg-sky-300 hover:text-white" onClick={logout}>Logout</button>
           </div>
         </div>
       </div>
