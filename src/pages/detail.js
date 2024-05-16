@@ -1,21 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { MdInfo,MdKeyboardArrowRight, MdKeyboardArrowLeft } from "react-icons/md";
+import axios from "axios";
+import Navbar from "../component/Navbar";
+import Footer from "../component/Footer";
+
 
 import { Rating, Progress } from "@material-tailwind/react";
+import { commentData } from "../component/data";
 
-import { buku, commentData } from "../component/data";
 import Barang from "../component/assets/barang.componet";
  
 
 export default function Detail () {
 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [varBuku, setVarBuku] = useState([]);
+    const [keranjang, setKeranjang] = useState([]);
     const [comment, setComment] = useState(commentData)
     const [userComment, setUserComment] = useState("")
     const [rate, setRate] = useState(0)
     const [showInput, setShowInput] = useState(false);
     const [showTeks, setShowTeks] = useState(false);
+
+    const buku = JSON.parse(localStorage.getItem("buku"));
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    useEffect(() => {
+        setIsLoggedIn(user !== null);
+    }, [])
 
     const sendComment = (event) => {
        if (event.keycode === 13) {
@@ -40,10 +53,7 @@ export default function Detail () {
         setShowTeks((prevState) => !prevState); // Function to toggle input visibility
       };
     
-
-    const {id,author,authorProf,bahasa,berat,cover,img,deskripsi,halaman,hard,isbn,lebar,panjang,penerbit,soft,softDisc,terbit,title} = JSON.parse(localStorage.getItem("buku")) || {};
-    
-    const imgData = img;
+    const selectedBuku = JSON.parse(localStorage.getItem("buku")) || {};
     
     let openComm =false;
     const toggleOpenComm = () => {
@@ -52,110 +62,58 @@ export default function Detail () {
     };
 
 
-
-    const [currentIndex,setCurrentIndex] = useState(0);
-    const slicing = imgData.slice(currentIndex,currentIndex+3)
-    console.log (slicing);
-
-    const handleNext = () => {
-        let newIndex = (currentIndex + 1) % imgData.length;
-        setCurrentIndex(newIndex);
-    };
-      
-    const  handlePrev = () => {
-        let newIndex = (currentIndex - 1) % imgData.length;
-        setCurrentIndex(newIndex);
-    };
-
     const backPage = () =>{
         window.history.back();
         localStorage.removeItem("buku");
     }
 
-    const  addToCartHard = (bookIsbn) => {
-        const user = localStorage.getItem("user");
-        setIsLoggedIn(user !== null);
+    const renderImage = (buffer) => {
+        const base64String = btoa(new Uint8Array(buffer).reduce((data,byte) => data + String.fromCharCode(byte), ""));
+        return `data:image/jpeg;base64,${base64String}`;
+    }
+    
+
+    const  addToCart = () => {
         if (isLoggedIn) {
-            // membuat sebuah variabel untuk menampung cart sementara
-            let tempCart = [];
-        
-            // cek eksistensi dari data cart pada localStorage
-            if (localStorage.getItem("cart") !== null) {
-            tempCart = JSON.parse(localStorage.getItem("cart"));
-            // JSON.parse() digunakan untuk mengonversi dari string -> array object
-            }
-        
+            // membuat sebuah variabel untuk menampung cart sementar
             // cek data yang dipilih user ke keranjang belanja
-            let existItem = tempCart.find((item) => item.isbn === bookIsbn);
-        
-            if (existItem) {
-            // jika item yang dipilih ada pada keranjang belanja
-            window.alert("Anda telah memilih item ini");
-            } else {
-                let promptJumlah = window.prompt("Masukkan jumlah item yang beli", "");
-                if (promptJumlah !== null && promptJumlah !== "") {
-                // jika user memasukkan jumlah item yg dibeli
-                
-                // menambahkan properti "jumlahBeli" pada item yang dipilih 
-                    const jumlahBeli = parseInt(promptJumlah);
-                    const harga = hard;
-                    
-                    // masukkan item yg dipilih ke dalam cart
-                    tempCart.push({id,isbn,author,title,cover,hard,harga,jumlahBeli});
+            if (selectedBuku.stok_buku > 0) {
+                let existItem = false
+                    // keranjang.find((item) => item.id_buku === idBuku);
+                if (existItem) {
+                // jika item yang dipilih ada pada keranjang belanja
+                window.alert("Anda telah memilih item ini");
+                } else {
+                    let promptJumlah = window.prompt("Masukkan jumlah item yang beli", "");
 
-                    
-                    // simpan array tempCart ke localStorage
-                    localStorage.setItem("cart", JSON.stringify(tempCart));
-                    window.alert('berhasil memasukkan barang ke keranjang');
+                    if (promptJumlah !== null && promptJumlah !== "") {
+                        const jumlahBeli = parseInt(promptJumlah);
+
+                        let url = "http://localhost:5000/transaksi/add"
+
+                        const data = {
+                            id: buku.id,
+                            id_buku: buku.id,
+                            qty: jumlahBeli
+                        }
+
+                        axios.post(url,data, {headers: {Authorization: "Bearer " + user.tkn}})
+                        .then((response) => {
+                            alert(response.data.message)
+                        }).catch((error) => {
+                            alert(error)
+                        })
+                    }
                 }
+            } else {
+                alert('stok buku saat ini sedang habis')
             }
         } else {
             window.alert('harus login / sign in terlebih dahulu')
         }
       };
 
-     const addToCartSoft = (bookIsbn) => {
-        const user = localStorage.getItem("user");
-        setIsLoggedIn(user !== null);
-        if (isLoggedIn) {
-            let tempCart = [];
-    
-        // cek eksistensi dari data cart pada localStorage
-        if (localStorage.getItem("cart") !== null) {
-          tempCart = JSON.parse(localStorage.getItem("cart"));
-          // JSON.parse() digunakan untuk mengonversi dari string -> array object
-        }
-    
-        // cek data yang dipilih user ke keranjang belanja
-        let existItem = tempCart.find((item) => item.isbn === bookIsbn);
-    
-        if (existItem) {
-          // jika item yang dipilih ada pada keranjang belanja
-          window.alert("Anda telah memilih item ini");
-        } else {
-            let promptJumlah = window.prompt("Masukkan jumlah item yang beli", "");
-            if (promptJumlah !== null && promptJumlah !== "") {
-              // jika user memasukkan jumlah item yg dibeli
-            
-              // menambahkan properti "jumlahBeli" pada item yang dipilih
-                const jumlahBeli = parseInt(promptJumlah);
-                const harga = softDisc;
-                
-                // masukkan item yg dipilih ke dalam cart
-                tempCart.push({id,isbn,author,title,cover,soft,harga,jumlahBeli});
-
-                
-                // simpan array tempCart ke localStorage
-                localStorage.setItem("cart", JSON.stringify(tempCart));
-                window.alert('berhasil memasukkan barang ke keranjang');
-            }
-          }
-        } else {
-            window.alert('harus login / sign in terlebih dahulu')
-        }
-      };
-    
-        const discPersent = (soft - softDisc) / soft * 100;
+      
 
         let sumOfRatings = 0;
         let numberOfRatings = 0;
@@ -168,78 +126,64 @@ export default function Detail () {
 
         const avrRating = sumOfRatings / numberOfRatings;
 
+       
+
+        useEffect(() => {
+            const dataBuku = () => {
+                let url = "http://localhost:5000/buku/getAll"
+            
+                axios.get(url)
+                .then(response => {
+                  setVarBuku(response.data.data)
+                  localStorage.setItem("coba", JSON.stringify(response.data.data))
+                })
+              }
+              dataBuku()
+        },[])
+
         return(
-            <div className="flex flex-col space-y-40 my-40 m-5 p-5 ">
-                <div>
+            <div className="">
+                <Navbar/>
+                <div className="flex flex-col space-y-40 my-40 m-5 p-5 ">
                     <button className=" w-max p-4 rounded-lg shadow-lg mb-5" onClick={backPage}>
                         <FaArrowLeft/>
                     </button>
                     <div className="flex space-x-10 mb-5">
                         <div  className=" w-5/12 flex flex-col space-y-4 rounded-2xl">
-                            <img id="cover" src={cover} alt="cover" className=" rounded-3xl m-6"/>
-        
-                            <div className="flex justify-between items-center">
-                                <button className="p-2 rounded-full shadow-lg" onClick={handlePrev}>
-                                    <MdKeyboardArrowLeft/>
-                                </button>
-                                {imgData.slice(currentIndex,currentIndex + 3).map((item,index) => ( 
-                                    <img id="alternate" src={item} alt={`alternate ${index}`} className=" w-1/6 rounded-lg " onClick={(ev) =>  cover= ev.target.src }/>                    
-                                ))}
-                                <button className="p-2 rounded-full shadow-lg" onClick={handleNext}>
-                                    <MdKeyboardArrowRight/>
-                                </button>
-                            </div>
-        
+                            <img id="cover" src={renderImage(buku.cover_buku.data)} alt="cover" className=" rounded-3xl m-6"
+                            onClick={console.log(buku.cover_buku.data)}/>
                         </div>
                         <div className="w-full space-y-10">
 
                             {/* header */}
                             <div>
-                                <p className=" text-xl text-[#4B4B4B]">{author}</p>
-                                <p className=" text-5xl font-bold">{title}</p>
+                                <p className=" text-xl text-[#4B4B4B]">{buku.author_buku}</p>
+                                <p className=" text-5xl font-bold">{buku.judul_buku}</p>
                             </div>
 
                             <hr className="outline-[#4B4B4B]"/>
 
                             <p className=" text-3xl font-bold text-center">Pilih Format Buku yang Tersedia</p>
-                            
-                            {/* pilih tipe cover */}
-                            <div className=" grid grid-cols-2 justify-items-center">
 
-                                {/* hardcover price */}
-                                <button id="hard" onClick={() => addToCartHard(isbn)} className=" relative flex flex-col space-y-1.5 shadow-2xl p-8 rounded-lg w-[400px]">
-                                    <div className="absolute top-0 right-0 scale-150 m-5">
-                                        <MdInfo />
-                                    </div>
-                                    <p className=" text-3xl font-semibold">Hard Cover</p>
-                                    <p className=" text-4xl font-bold text-[#3A70E2]">Rp. {hard}</p>
-                                </button>
-
-                                {/* softcover price */}
-                                <button id="soft"onClick={() => addToCartSoft(isbn)} className=" relative flex flex-col space-y-1.5 shadow-2xl p-8 rounded-lg w-[400px]" >
-                                    <div className="absolute top-0 right-0 scale-150 m-5">
-                                        <MdInfo />
-                                    </div>
-                                    <p className=" text-3xl font-semibold">Soft Cover</p>
-                                    <p className=" text-4xl font-bold text-[#3A70E2]">Rp. {softDisc}</p>
-                                    
-                                    <div className="flex items-center space-x-5">
-                                        <p className=" line-through text-2xl font-bold text-[#4B4B4B]">Rp. {soft}</p>
-                                        <p className=" text-base font-bold p-2 rounded-md bg-red-300 text-red-500 w-max">{discPersent}%</p>
-                                    </div>
-                                </button>
-                            </div>
+                            {/* price */}
+                            <button id="hard" onClick={() => addToCart()} className=" relative flex flex-col space-y-1.5 shadow-2xl p-8 rounded-lg w-[400px] mx-auto">
+                                <div className="absolute top-0 right-0 scale-150 m-5">
+                                    <MdInfo />
+                                </div>
+                                <p className=" text-3xl font-semibold">Harga</p>
+                                <p className=" text-4xl font-bold text-[#3A70E2]">Rp. {buku.harga_buku}</p>
+                            </button>
 
                             {/* deskipsi */}
-                            <p className=" text-3xl font-bold">Deskripsi Buku {title}</p>
+                            <p className=" text-3xl font-bold">Deskripsi Buku {buku.judul_buku}</p>
                             {showTeks? (
                                 <div>
-                                    <p className=" text-justify">{deskripsi}</p>
+                                    <p className=" text-justify">{buku.deskripsi_buku}</p>
                                     <button onClick={toggleTeks} className="text-blue-500 text-xl font-bold">Selengkapnya</button>
                                 </div>
                             ) : (
                                 <div>
-                                    <p className=" text-justify line-clamp-4">{deskripsi}</p>
+                                    <p className=" text-justify line-clamp-4">{buku.deskripsi_buku}</p>
                                     <button onClick={ toggleTeks} className="text-blue-500 text-xl font-bold">Selengkapnya</button>
                                 </div>
                             )}
@@ -250,40 +194,24 @@ export default function Detail () {
 
                                 <div className=" grid grid-cols-3 gap-10">
                                     <div>
-                                        <p className=" text-2xl font-bold">Jumlah Halaman</p>
-                                        <p>{halaman}</p>
+                                        <p className=" text-2xl font-bold">Author</p>
+                                        <p>{buku.author_buku}</p>
                                     </div>
                                     <div>
-                                        <p className=" text-2xl font-bold">Bahasa</p>
-                                        <p>{bahasa}</p>
+                                        <p className=" text-2xl font-bold">Isbn</p>
+                                        <p>{buku.author_buku}</p>
                                     </div>
                                     <div>
-                                        <p className=" text-2xl font-bold">Berat</p>
-                                        <p>{berat}</p>
+                                        <p className=" text-2xl font-bold">Kategori</p>
+                                        <p>{buku.kategori_buku}</p>
                                     </div>
                                     <div>
                                         <p className=" text-2xl font-bold">Tanggal Terbit</p>
-                                        <p>{terbit}</p>
+                                        <p>{buku.createdAt}</p>
                                     </div>
                                     <div>
                                         <p className=" text-2xl font-bold">Penerbit</p>
-                                        <p>{penerbit}</p>
-                                    </div>
-                                    <div>
-                                        <p className=" text-2xl font-bold">Lebar</p>
-                                        <p>{lebar}</p>
-                                    </div>
-                                    <div>
-                                        <p className=" text-2xl font-bold">ISBN</p>
-                                        <p>{isbn}</p>
-                                    </div>
-                                    <div>
-                                        <p className=" text-2xl font-bold">Author</p>
-                                        <p>{author}</p>
-                                    </div>
-                                    <div>
-                                        <p className=" text-2xl font-bold">Panjang</p>
-                                        <p>{panjang}</p>
+                                        <p>{buku.penerbit_buku}</p>
                                     </div>
                                 </div>
                             </div>
@@ -292,7 +220,7 @@ export default function Detail () {
                 </div>
 
                 {/* rating and rivew */}
-                <div className="  flex flex-col space-y-5">
+                <div className="  flex flex-col space-y-5  m-5 p-5">
                     <p className=" text-3xl font-bold">Rating & Review</p>
                     <div className="flex justify-between">
                         {/* total rating */}
@@ -352,7 +280,7 @@ export default function Detail () {
                     {/* about creator */}
                     <div>
                         <p className="text-2xl font-bold">About Creator</p>
-                        <p>{authorProf}</p>
+                        {/* <p>{authorProf}</p> */}
                     </div>
 
                     {/* rate this book */}
@@ -385,20 +313,19 @@ export default function Detail () {
                 <div className="flex flex-col space-y-10">
                     <p className=" text-3xl font-bold">Rekomendasi buku yang rilis terbaru</p>
                     <div className="flex">
-                      {buku.map((item,index) => (
-                          <Barang 
-                            stok ={item.stok}
-                            buku ={item}
-                            cover = {item.cover}
-                            author = {item.author}
-                            title = {item.title}
-                            softDisc = {item.softDisc}
-                            soft = {item.soft}
-                          />
-                      ))}
+                        {varBuku.map((item) => (
+                        <Barang 
+                        buku ={item}
+                        cover = {item.cover_buku}
+                        author = {item.author_buku}
+                        title = {item.nama_buku}
+                        stok = {item.stok_buku}
+                        harga = {item.harga_buku}
+                        />
+                        ))}
                     </div>
                 </div>
-    
+                <Footer/>
             </div>
         );
     }

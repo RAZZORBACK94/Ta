@@ -1,72 +1,117 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Barang from "../assets/barang.componet";
-import { buku } from "../data";
+import axios from "axios";
+import Navbar from "../Navbar";
+import Footer from "../Footer";
+
 
 export default function Kategori() {
-  const [sortOrder, setSortOrder] = useState("asc");
-  const [stok, setStok] = useState(null);
-  const [filterBuku, setFilterBuku] = useState(buku);
+
+  const [stok, setStok] = useState("semua");
+  const [varBuku, setVarBuku] = useState([]);
+  const [filterBuku, setFilterBuku] = useState([]);
   const [minimum, setMinimum] = useState(0);
   const [maksimum, setMaksimum] = useState(0);
 
-  const handleSortOrder = () => {
-    setSortOrder((order) => (order === "asc" ? "desc" : "asc"));
-  };
-  const handleStok = () => {
-    setStok((stok) => (stok === "semua" ? "tersedia" : "semua"));
-  };
 
-  console.log(stok)
 
-  const rateOrderBuku = (a,b) => {
-      if (sortOrder === "asc") {
-        return  b.rate - a.rate
-      } else if (sortOrder === "desc") {
-        return a.rate - b.rate
-      }
+  const dataBuku = () => {
+    const user = JSON.parse(localStorage.getItem("user"))
+
+    let url = "http://localhost:5000/buku/getAll"
+
+    axios.get(url, {headers : {authorization : "Bearer " + user.tkn }})
+    .then(response => {
+      setVarBuku(response.data.data)
+      setFilterBuku(response.data.data)   
+    })
+    .catch((error) => {
+      console.error(error);
+    })
+
+    console.log(varBuku)
+    console.log(filterBuku)
   }
 
 
-  const filter = (event) => {
-    if (event.keyCode === 13) {
-      console.log("keycode succes");
-      // 13 adalah kode untuk tombol enter
-      let minimal;
-      let maksimal;
-
-      minimal = parseInt(minimum);
-      maksimal = parseInt(maksimum);
-
-      if (minimal < 0) {
-        window.alert("harga minimal harus lebih besar dari Rp.1");
-      } else if (maksimal < 0) {
-        window.alert("harga maksimal harus lebih besar dari Rp.1");
-      } else {
-        if (minimal > 0 && maksimal > 0) {
-          let result = buku.filter((item) => {
-            return item.softDisc >= minimal && item.softDisc <= maksimal;
-          });
-          setFilterBuku(result);
-        } else if (minimal > 0) {
-          let result = buku.filter((item) => {
-            return item.softDisc >= minimal;
-          });
-          setFilterBuku(result);
-        } else if (maksimal > 0) {
-          let result = buku.filter((item) => {
-            return item.softDisc <= maksimal;
-          });
-          setFilterBuku(result);
-        }
-      }
+  const handleStok = () => {
+    // setStok((stok) => (stok === "semua" ? "tersedia" : "semua"));
+    if (stok === "semua") {
+      setStok("tersedia")
+    } else if (stok === "tersedia") {
+      setStok("semua")
     }
+    console.log(stok)
   };
+  
+
+   
+      
+      // 13 adalah kode untuk tombol enter
+      const filter = (event) => {
+
+        console.log("keycode succes");
+      
+        if ( event.keyCode === 13){
+          
+        let minimal = parseInt(minimum);
+        let maksimal = parseInt(maksimum);
+        console.log(minimal)
+        console.log(maksimal)
+        console.log(stok)
+      
+        if (minimal < 0) {
+          window.alert("Harga minimal harus lebih besar dari Rp.1");
+          return;
+        }
+      
+        if (maksimal < 0) {
+          window.alert("Harga maksimal harus lebih besar dari Rp.1");
+          return;
+        }
+
+        const filter= varBuku.filter((item) => {
+          if (stok === "semua") {
+            if (minimal > 0 && maksimal > 0) {
+              return item.harga_buku >= minimal && item.harga_buku <= maksimal;
+            } else if (minimal > 0 && maksimal === 0) {
+              return item.harga_buku >= minimal;
+            } else if (maksimal > 0 && minimal === 0) {
+              return item.harga_buku <= maksimal;
+            } else {
+              return item.stok_buku >= 0
+            }
+          } else if (stok === "tersedia") {
+            if (minimal > 0 && maksimal > 0) {
+              return item.harga_buku >= minimal && item.harga_buku <= maksimal && item.stok_buku > 0;
+            } else if (minimal > 0 && maksimal === 0) {
+              return item.harga_buku >= minimal && item.stok_buku > 0;
+            } else if (maksimal > 0 && minimal === 0) {
+              return item.harga_buku <= maksimal && item.stok_buku > 0;
+            }
+            return item.stok_buku > 0
+          }
+        })
+
+        
+      
+        setFilterBuku(filter);}
+        // ... (rest of your code)
+      };
+
+
+  useEffect(() => {
+    dataBuku();
+  }, []);
 
   return (
-    <div className=" my-40 ml-20 mr-10">
-      <div className="flex space-x-10">
+    <div className="">
+      <Navbar/>
+      <div className="flex space-x-10 my-40 ml-20 mr-10">
         {/* tab filter */}
-        <form className=" w-4/6 bg-[#F1F8FF] py-10 px-7 flex flex-col space-y-4 rounded-2xl">
+        <form className=" w-4/6 bg-[#F1F8FF] py-10 px-7 flex flex-col space-y-4 rounded-2xl"
+          onKeyUp={(e) => filter(e)}
+        >
           <p className="font-bold text-4xl">Filter</p>
 
           <p className="font-bold text-2xl">Harga</p>
@@ -81,7 +126,6 @@ export default function Kategori() {
               type="number"
               className="bg-[#E4F2FF] w-full rounded-lg py-5 pl-9"
               onChange={(ev) => setMinimum(ev.target.value)}
-              onKeyUp={(ev) => filter(ev)}
             />
           </div>
 
@@ -95,7 +139,6 @@ export default function Kategori() {
               type="number"
               className="bg-[#E4F2FF] w-full rounded-lg py-5 pl-9"
               onChange={(ev) => setMaksimum(ev.target.value)}
-              onKeyUp={(ev) => filter(ev)}
             />
           </div>
 
@@ -103,40 +146,33 @@ export default function Kategori() {
           <p className="text-xl font-semibold text-[#1F1F1F]">
             Berdasarkan Stok
           </p>
-          <label className="flex space-x-2">
-            <input
-              onChange={(ev) => setStok(ev.target.value)}
-              id="Semua"
-              class="peer/Semua"
-              type="radio"
-              value="semua"
-              name="status"
-              checked
-            />
-            <label
-              for="Semua"
-              class="peer-checked/Semua:text-sky-500 text-xl font-semibold text-[#1F1F1F]"
-            >
-              Semua
-            </label>
-          </label>
+            <form onChange={() =>handleStok()}>
+              <div className="flex space-x-2">
+                <input
+                  type="radio"
+                  id="Semua"
+                  value="semua"
+                  name="status"
+                  checked={stok === "semua"}
+                />
+                <label for="Semua" className="text-xl font-semibold text-[#1F1F1F]">
+                  Semua
+                </label>
+              </div>
 
-          <div className="flex space-x-2">
-            <input
-              onChange={() => window.alert('radio success')}
-              id="Tersedia"
-              class="peer/Tersedia"
-              type="radio"
-              value="tersedia"
-              name="status"
-            />
-            <label
-              for="Tersedia"
-              class="peer-checked/Tersedia:text-sky-500 text-xl font-semibold text-[#1F1F1F]"
-            >
-              Tersedia
-            </label>
-          </div>
+              <div className="flex space-x-2">
+                <input
+                  type="radio"
+                  id="Tersedia"
+                  value="tersedia"
+                  name="status"
+                  checked={stok === "tersedia"}
+                />
+                <label for="Tersedia" className="text-xl font-semibold text-[#1F1F1F]">
+                  Tersedia
+                </label>
+              </div>
+            </form>
         </form>
 
         {/* bagian kanan */}
@@ -145,34 +181,22 @@ export default function Kategori() {
           <div className="flex justify-between items-center">
             {/* hail pencarian */}
             <p className={`font-bold text-xl`}>
-              {filterBuku.length} buku berhasil ditemukan
+              {`${filterBuku.length} buku berhasil ditemukan`} 
             </p>
 
             {/* button terpopuler */}
-            <select
-              className=" items-center rounded-2xl px-4 py-2 bg-sky-500 text-white text-xl font-bold outline-none"
-              value={sortOrder}
-              onChange={handleSortOrder}
-            >
-              <option className=" bg-white text-black font-bold" value="asc">
-                Terpopuler
-              </option>
-              <option className=" bg-white text-black font-bold" value="desc">
-                Unpopuler
-              </option>
-            </select>
+
           </div>
-          <div className="flex">
-            {filterBuku.sort((a,b) => rateOrderBuku(a,b)).map((item) => (
-              <Barang
-                stok = {item.stok}
-                buku={item}
-                cover={item.cover}
-                author={item.author}
-                title={item.title}
-                softDisc={item.softDisc}
-                soft={item.soft}
-              />
+          <div className=" grid  grid-cols-3">
+            {filterBuku.map((item) => (
+              <Barang 
+              buku ={item}
+              cover = {item.cover_buku}
+              author = {item.author_buku}
+              title = {item.nama_buku}
+              stok = {item.stok_buku}
+              harga = {item.harga_buku}
+            />
             ))}
           </div>
           <p className={`${filterBuku.length === 0 ? "" : " hidden"} text-center font-bold text-2xl`}>
@@ -180,6 +204,7 @@ export default function Kategori() {
           </p>
         </div>
       </div>
+      <Footer/>
     </div>
   );
 }

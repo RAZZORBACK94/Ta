@@ -2,6 +2,8 @@ import React,{useEffect} from "react";
 import regisImg from "../component/assets//regis.jpeg";
 import google from "../component/assets/google.png";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import md5 from "md5";
 
 import { user } from "../component/data";
 
@@ -11,6 +13,7 @@ class Regis extends React.Component {
     super();
     this.state = {
       nama_user: '',
+      jk_user: 'Laki',
       alamat_user: '',
       telepon_user: '',
       username_user: '',
@@ -20,38 +23,59 @@ class Regis extends React.Component {
     }
   }
 
-  checkUsername = (event) => {
-    this.setState({ username_user: event.target.value });
-    console.log(this.state.username_user)
-    const usernameExists = user.find((userItem) => 
-      userItem.username_user === this.state.username_user
-    );
-    if(usernameExists) {
-      this.setState({usernameCheck : true})
-    } else {
-      this.setState({usernameCheck : false})
+  // checkUsername = (event) => {
+  //   this.setState({ username_user: event.target.value });
+  //   let url = `http://localhost:5000/user/find/${this.state.username_user}`
+  
+  //   axios.get(url,this.state.username_user)
+  //   .then(response =>{
+  //     if(response.data.success === true) {
+  //       this.setState({usernameCheck : true})
+  //     } else {
+  //       this.setState({usernameCheck : false})
+  //     }
+  //   })
+  //   .catch (Error =>{
+  //     alert(Error)
+  //   })
+  // }
+
+  handleJkUser = () => {
+    if (this.state.jk_user == "Laki") {
+      this.setState({jk_user :  "Perempuan"});
+    } else if (this.state.jk_user == "Perempuan") {
+      this.setState({jk_user :  "Laki"});
     }
-    console.log(this.state.usernameCheck)
-  }
+    console.log(this.state.jk_user)
+  };
 
   regis = () => {
+    let url = "http://localhost:5000/user/register";
 
     const regisNew = { 
       nama_user: this.state.nama_user,
+      jk_user: this.state.jk_user,
       alamat_user: this.state.alamat_user,
       telepon_user: this.state.telepon_user,
       username_user: this.state.username_user,
       password_user: this.state.password_user,
     }
 
-    user.push(regisNew)
-
-    let register = []
-    register.push(regisNew)
-
-    localStorage.setItem("user", JSON.stringify(register))
-
-    window.location.href = '/';
+    axios.post(url,regisNew)
+    .then(response => {
+      if (response.data.success === true) {
+        alert(response.data.message);
+        const data = JSON.stringify(response.data.data);
+        localStorage.setItem('user',data);
+        window.location.href ='/';
+      } else {
+        alert(response.data.message)
+      }
+    })
+    .catch (Error => {
+      console.log(Error);
+      alert(Error);
+    })
   }
 
   render() {
@@ -100,14 +124,28 @@ class Regis extends React.Component {
                 className="w-full border-2 border-[#E5E5E5] p-3 rounded-lg focus:outline-blue-500"
               />
             </div>
+            <div className="">
+            <select
+              className="w-full rounded-lg p-3 bg-sky-500 text-white text-xl font-bold outline-none"
+              value={this.state.jk_user}
+              onChange={this.handleJkUser}
+            >
+              <option className=" bg-white text-black font-bold" value="Laki">
+                Laki Laki
+              </option>
+              <option className=" bg-white text-black font-bold" value="Perempuan">
+                Perempuan
+              </option>
+            </select>
+            </div>
             {/* input username */}
             <div className="my-5 text-left">
               <p className="mb-3 font-bold">Username</p>
               <input
                 type="text"
                 value={this.state.username_user}
-                onChange={this.checkUsername}
-                className={`w-full border-2 border-[#E5E5E5] p-3 rounded-lg ${ this.state.usernameCheck? ' border-red-500 focus:outline-red-500' : 'focus:outline-blue-500'}`}
+                onChange={(ev) => this.setState({ username_user: ev.target.value })}
+                className={`w-full border-2 border-[#E5E5E5] p-3 rounded-lg ${ this.state.usernameCheck? ' border-red-500 focus:outline-red-500' : ''}`}
               />
               <p className={`${this.state.usernameCheck? '':'hidden'} text-red-500 text-sm`}>Username telah dipakai. Silahkan gunakan Username lain</p>
             </div>
@@ -136,7 +174,7 @@ class Regis extends React.Component {
               <p className="font-bold">I Agree To All Term & Conditions</p>
             </div>
           {/*sign in*/}
-          <button className="bg-[#3B82F6] w-full p-3 rounded-lg mb-2" onClick={this.regis}>
+          <button className={`bg-[#3B82F6] w-full p-3 rounded-lg mb-2`} onClick={this.checkUsername? null : this.regis} >
             <p className="text-white ">Sign Up</p>
           </button>
           <div className="flex mb-2 ">

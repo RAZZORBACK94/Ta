@@ -1,5 +1,5 @@
 import React from "react";
-import {Route, Routes } from "react-router-dom";
+import {Route, Routes} from "react-router-dom";
 import NavbarWrapper from "../assets/navbarWrapper";
 
 import Beranda from "./Beranda";
@@ -10,8 +10,10 @@ import Contact from "./contact";
 import Login from "../../pages/login";
 import Regis from "../../pages/regis";
 import Detail from "../../pages/detail";
-import Bayar from "../../pages/bayar";
+import Search from "../../pages/search";
 import Kirim from "../../pages/kirim";
+import Account from "../../pages/account";
+import SuccesPay from "../../pages/succesPay";
 
 
 const WrappedBeranda = NavbarWrapper(Beranda);
@@ -27,10 +29,13 @@ class Ling extends React.Component {
             <Route path="/Keranjang" element={<Keranjang />} />
             <Route path="/Contact" element={<Contact />} />
             <Route path="/Login" element={<Login />} />
+            <Route path="/Account" element={<Account />} />
             <Route path="/Regis" element={<Regis />} />
             <Route path="/Detail" element={<Detail />} />
-            <Route path="/Bayar" element={<Bayar />} />
+            <Route path="/Search" element={<Search />} />
             <Route path="/Kirim" element={<Kirim />} />
+            <Route path="/succesPay" element={<SuccesPay />} />
+
           </Routes>
     );
   }
