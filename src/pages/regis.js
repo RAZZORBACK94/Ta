@@ -4,6 +4,7 @@ import google from "../component/assets/google.png";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import md5 from "md5";
+import { FaArrowLeft } from "react-icons/fa";
 
 import { user } from "../component/data";
 
@@ -49,6 +50,10 @@ class Regis extends React.Component {
     console.log(this.state.jk_user)
   };
 
+  backPage = () =>{
+    window.location.href = '/'
+  }
+
   regis = () => {
     let url = "http://localhost:5000/user/register";
 
@@ -80,12 +85,16 @@ class Regis extends React.Component {
 
   render() {
     return (
-      <div className="p-5 flex justify-center">
-        {/*bagian kanan*/}
+      <div className="p-5 flex flex-col ">
+        <button className=" w-max p-4 rounded-lg shadow-lg mb-5" onClick={this.backPage}>
+          <FaArrowLeft/>
+        </button>
+        <div className="flex justify-center">
+          {/*bagian kanan*/}
         <div className="w-auto mx-5 ">
           <div className="p-5 text-center">
             {/* nama website */}
-          <p className="bg-blue-300 mb-10">
+          <p className="mb-20 text-5xl font-bold">
             BUKU <span className=" text-orange-300">KU</span>
           </p>
           {/* header */}
@@ -175,7 +184,7 @@ class Regis extends React.Component {
             </div>
           {/*sign in*/}
           <button className={`bg-[#3B82F6] w-full p-3 rounded-lg mb-2`} onClick={this.checkUsername? null : this.regis} >
-            <p className="text-white ">Sign Up</p>
+            <p className="text-white ">Sign In</p>
           </button>
           <div className="flex mb-2 ">
             <hr className="w-1/2"/>
@@ -196,6 +205,7 @@ class Regis extends React.Component {
           </div>
         </div>
         <img src={regisImg} className="rounded-lg w-1/2" />
+        </div>
       </div>
     );
   }

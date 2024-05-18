@@ -45,7 +45,7 @@ function Navbar() {
   
   return (
     <div>
-      <div className=" bg-white py-6 px-32 w-screen top-0 fixed z-[100] shadow-lg">
+      <div className=" bg-white py-6 px-32 w-screen top-0 fixed z-[90] shadow-lg">
         <div className=" flex justify-between items-center">
           <div className="logo font-bold text-2xl text-sky-400">
             <h1>
@@ -86,6 +86,10 @@ function Navbar() {
           </div>
           <div className={`button ${isLoggedIn ? '' : 'hidden'}`}>
             <button className="px-4 py-2 border border-sky-300 rounded-lg text-sky-300 font-semibold hover:bg-sky-300 hover:text-white" onClick={logout}>Logout</button>
+            <span className=" text-2xl"> | </span>
+            <Link to= "/Account">
+            <button className="px-4 py-2 border border-sky-300 rounded-lg text-sky-300 font-semibold hover:bg-sky-300 hover:text-white"> Account</button>
+            </Link>
           </div>
         </div>
       </div>

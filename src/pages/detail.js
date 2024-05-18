@@ -150,7 +150,7 @@ export default function Detail () {
                     </button>
                     <div className="flex space-x-10 mb-5">
                         <div  className=" w-5/12 flex flex-col space-y-4 rounded-2xl">
-                            <img id="cover" src={renderImage(buku.cover_buku.data)} alt="cover" className=" rounded-3xl m-6"
+                            <img id="cover" src={`http://localhost:5000/cover/${buku.cover_buku}`} alt="cover" className=" rounded-3xl m-6"
                             onClick={console.log(buku.cover_buku.data)}/>
                         </div>
                         <div className="w-full space-y-10">

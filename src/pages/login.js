@@ -67,7 +67,7 @@ class Login extends React.Component {
           <div className="w-auto mx-5 ">
             <div className="p-10 text-center">
               {/* nama website */}
-            <p className="bg-blue-300 mb-20">
+            <p className=" mb-20 text-5xl font-bold">
               BUKU <span className=" text-orange-300">KU</span>
             </p>
             {/* header */}

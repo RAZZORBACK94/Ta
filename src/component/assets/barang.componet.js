@@ -48,7 +48,7 @@ function Barang(props) {
       )}
       <img
         className="text-center rounded-md object-contain w-full h-48 my-4"
-        src={props.cover}
+        src={`http://localhost:5000/cover/${props.cover}`}
         alt={props.cover} // Set default alt text
       />
       <div className="p-4">

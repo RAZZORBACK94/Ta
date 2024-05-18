@@ -83,6 +83,10 @@ export default function Keranjang() {
     window.location.reload()
   };
 
+  const backPage = () =>{
+    window.history.back();
+}
+
   const Drop = async(event,item) => {
     // beri konfirmasi untuk menghapus data
     if (window.confirm("Apakah anda yakin ingin menghapus data ini?")) {
@@ -168,7 +172,7 @@ export default function Keranjang() {
   return (
     <div className=" flex flex-col space-y-5 mt-40 m-5 p-5">
       {/* back button */}
-      <button className=" w-max p-4 rounded-lg shadow-lg mb-5">
+      <button className=" w-max p-4 rounded-lg shadow-lg mb-5" onClick={backPage}>
         <FaArrowLeft />
       </button>
 
