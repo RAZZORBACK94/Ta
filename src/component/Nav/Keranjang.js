@@ -2,30 +2,23 @@ import axios, { Axios } from "axios";
 import React, { useEffect, useState } from "react";
 import { FaArrowLeft, FaMinus, FaPlus } from "react-icons/fa";
 import { MdDeleteOutline } from "react-icons/md";
+
+import Navbar from '../Navbar';
+import Footer from '../Footer';
 // bagaimana cara menambahkan propert isChecked = false kedalam array data menggunakan function (tanpa mengubah array data secara langsung)
 
 export default function Keranjang() {
+
+
   const [keranjang, setKeranjang] = useState([]);
   const [buku, setBuku] = useState([]);
   const [idBuku, setIdBuku] = useState([]);
   const [totalHarga, setTotalHarga] = useState();
 
+  console.log(buku)
+
+  
   const user = JSON.parse(localStorage.getItem("user"));
-
-  const calculateTotalHarga = () => {
-    let totalHarga = null;
-
-    if (keranjang && keranjang.length > 0) {
-      keranjang.forEach((item) => {
-        totalHarga += item.total;
-      });
-    } else {
-      // Handle the case where keranjang is empty or undefined
-      console.warn("Keranjang is empty or undefined");
-    }
-
-    setTotalHarga(totalHarga);
-  };
 
   const inc = (e, id) => {
     keranjang.map(
@@ -120,79 +113,85 @@ export default function Keranjang() {
 
   const fetchData = async () => {
     try {
-      // Get keranjang data
-      const keranjangResponse = await axios.get(
-        "http://localhost:5000/keranjang/getKeranjang",
-        { headers: { Authorization: "Bearer " + user.tkn } }
-      );
-      setKeranjang(keranjangResponse.data.data);
-      localStorage.setItem(
-        "coba1",
-        JSON.stringify(keranjangResponse.data.data)
-      );
-
-      // Extract idBuku from keranjang
-      const idBuku = keranjangResponse.data.data.map((item) => item.id_buku);
-      setIdBuku(idBuku);
-      localStorage.setItem("coba2", JSON.stringify(idBuku));
-
-      // Get buku data based on idBuku
-      const bukuPromises = idBuku.map((id) => {
-        return axios.post(
-          "http://localhost:5000/buku/findId",
-          { id },
-          { headers: { Authorization: "Bearer " + user.tkn } }
-        );
+      const response = await axios.get("http://localhost:5000/keranjang/getKeranjang", {
+        headers: { Authorization: `Bearer ${user.tkn}` }
       });
+      setKeranjang(response.data.data);
+      localStorage.setItem("coba1", JSON.stringify(response.data.data));
+  
+      const keranjangData = response.data.data;
+       // Now keranjangData should have data
+  
+      let data = [];
+      for (const item of keranjangData) {
+        if (item.id_buku) { // Check for null before accessing
+          
+          try {
+            const bukuResponse = await axios.get(`http://localhost:5000/buku/findId/${item.id_buku}`, {
+              headers: { Authorization: `Bearer ${user.tkn}` }
+            });
+            data.push(bukuResponse.data.data);
+          } catch (error) {
+            console.error("Error fetching book data for id:", item.id_buku, error);
+          }
+        } else {
+          console.warn("Skipping item with null idBuku:", item); // Optional: Log a warning
+        }
+      }
+  
+      setBuku(data[0]);
+      localStorage.setItem("coba2", JSON.stringify(data[0]));
 
-      const bukuResponse = await Promise.all(bukuPromises);
-      const varBuku = bukuResponse.map((response) => response.data.data);
-      setBuku(varBuku);
-      localStorage.setItem("coba3", JSON.stringify(varBuku));
-
-      let harga = 0;
-      keranjangResponse.data.data.forEach((item) => {
-        harga += item.total;
-      });
-      setTotalHarga(harga);
+      try{
+        let harga = 0;
+        keranjangData.forEach((item) => {
+          harga += item.total;
+        });
+        setTotalHarga(harga);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        // Handle errors appropriately, e.g., display an error message
+      }
     } catch (error) {
-      console.error("Error fetching data:", error);
-      // Handle errors appropriately, e.g., display an error message
+      console.error(error);
     }
   };
-
+  
   useEffect(() => {
     
 
-    fetchData(); // Call the function on initial render
+    fetchData();
+ // Call the function on initial render
 
     // Re-render only when keranjang changes
   }, []);
 
   return (
-    <div className=" flex flex-col space-y-5 mt-40 m-5 p-5">
+    <div >
       {/* back button */}
+      <Navbar/>
+      <div className=" flex flex-col space-y-5 mt-40 m-5 p-5">
       <button className=" w-max p-4 rounded-lg shadow-lg mb-5" onClick={backPage}>
         <FaArrowLeft />
       </button>
-
+      
       {/* judul page */}
       <p className=" text-5xl font-bold">Keranjang</p>
 
       <div className="flex justify-between space-x-5">
-      {buku.length > 0 ? 
+      {buku != null ? 
                             (   <div className="flex- flex-col space-y-5 w-full">
                             {/* filter */}
                   
                             {/* isi keranjang */}
                             {buku.map((item, key) => (
-                              <div className="relative flex flex-col space-y-20 p-5 rounded-lg shadow-lg">
+                              <div className="relative flex flex-col p-5 rounded-lg shadow-lg">
                                 <div className=" flex justify-between">
                                   <div className="flex items-start space-x-8">
-                                    <img src={item.cover_buku}/>
+                                    <img className="w-1/6" src={`http://localhost:5000/cover/${item.cover_buku}`}/>
                                     <div>
-                                      <p className=" text-2xl font-semibold">{item.nama_buku}</p>
-                                      <p className=" text-lg text-slate-500">
+                                      <p className=" text-4xl font-semibold">{item.nama_buku}</p>
+                                      <p className=" text-xl text-slate-500">
                                         {item.author_buku}
                                       </p>
                                     </div>
@@ -256,6 +255,8 @@ export default function Keranjang() {
           </button>
         </div>
       </div>
+      </div>
+      <Footer/>
     </div>
   );
 }

@@ -5,7 +5,7 @@ export default function SuccesPay () {
 
     const [total, setTotal] = useState();
 
-    const buku = JSON.parse(localStorage.getItem("coba3"))
+    const buku = JSON.parse(localStorage.getItem("coba2"))
     const keranjang = JSON.parse(localStorage.getItem("coba1"))
 
 
@@ -48,7 +48,7 @@ export default function SuccesPay () {
                 <div className=" flex justify-between">
                   <div className="flex items-start space-x-8">
 
-                    <img src={item.cover_buku} alt="cover" className="w-[]82p h-[126px] rounded-lg"/>
+                    <img src={`http://localhost:5000/cover/${item.cover_buku}`} alt="cover" className="w-[]82p h-[126px] rounded-lg"/>
 
                     <div>
                       <p className=" text-2xl font-semibold">{item.nama_buku}</p>

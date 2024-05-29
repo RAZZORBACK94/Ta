@@ -6,18 +6,22 @@ import { FaArrowLeft } from "react-icons/fa";
 
 import Navbar from "../component/Navbar";
 import Footer from "../component/Footer";
+import axios from "axios";
 
-export default function Search() {
+export default function Rekomendasi() {
     const [buku, setBuku] = useState([])
 
     const backPage = () =>{
         window.history.back();
-        localStorage.removeItem("bukuSearch");
     }
 
     const dataBuku = () => {
-        const data = JSON.parse(localStorage.getItem("bukuSearch"))
-        setBuku(data)
+      let url = "http://localhost:5000/buku/getAll"
+
+      axios.get(url)
+      .then((response) => {
+        setBuku(response.data.data)
+      })
       }
 
     useEffect(() => {
@@ -28,20 +32,15 @@ export default function Search() {
     return (
         <div>
             <Navbar/>
-            <div className="flex flex-col my-40 m-5 p-5">
+            <div className="flex flex-col space-y-40 my-40 m-5 p-5">
                 <button className=" w-max p-4 rounded-lg shadow-lg mb-5" onClick={backPage}>
                     <FaArrowLeft/>
                 </button>
-                {buku.length > 0? (
-                    <p className="text-center font-bold text-2xl mb-10">{buku.length} Buku Berhasil Ditemukan</p>
-                ) : (
-                    <p className="text-center font-bold text-2xl mb-10">Tidak Menemukan Buku Yang Sesuai Dengan Pencarian Anda</p>
-                )}
+                <p className="text-center font-bold text-2xl">Rekomendasi Nih Buat Kamu 🔥</p>
                 <div className=" grid grid-cols-5">
                     {buku.map((item) => (
                         <Barang 
                             buku ={item}
-                            nama = {item.nama_buku}
                             cover = {item.cover_buku}
                             author = {item.author_buku}
                             title = {item.nama_buku}

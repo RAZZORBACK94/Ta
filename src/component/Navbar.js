@@ -23,11 +23,9 @@ function Navbar() {
       let url = 'http://localhost:5000/buku/find';
 
       const keyword = search;
-      alert(keyword)
 
       axios.post(url,{keyword})
       .then(response => {
-        alert(JSON.stringify(response.data.data))
         localStorage.setItem("bukuSearch", JSON.stringify(response.data.data))
         window.location.href = '/Search'
       })
@@ -68,8 +66,8 @@ function Navbar() {
           </div>
 
           <div className=" flex justify-around font-semibold w-40">
-            <Link className=" px-2  hover:text-sky-400" to="/Kategori">
-              kategori
+            <Link className=" px-2  hover:text-sky-400" to="/Filter">
+              Filter
             </Link>
             <Link className=" px-2 scale-150 hover:text-sky-400" to="/Keranjang">
               <FiShoppingCart/>

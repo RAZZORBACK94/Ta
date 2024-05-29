@@ -150,15 +150,14 @@ export default function Detail () {
                     </button>
                     <div className="flex space-x-10 mb-5">
                         <div  className=" w-5/12 flex flex-col space-y-4 rounded-2xl">
-                            <img id="cover" src={`http://localhost:5000/cover/${buku.cover_buku}`} alt="cover" className=" rounded-3xl m-6"
-                            onClick={console.log(buku.cover_buku.data)}/>
+                            <img id="cover" src={`http://localhost:5000/cover/${buku.cover_buku}`} alt="cover" className=" rounded-3xl m-6"/>
                         </div>
                         <div className="w-full space-y-10">
 
                             {/* header */}
                             <div>
                                 <p className=" text-xl text-[#4B4B4B]">{buku.author_buku}</p>
-                                <p className=" text-5xl font-bold">{buku.judul_buku}</p>
+                                <p className=" text-5xl font-bold">{buku.nama_buku}</p>
                             </div>
 
                             <hr className="outline-[#4B4B4B]"/>
@@ -288,14 +287,13 @@ export default function Detail () {
                         <p className="text-2xl font-bold">Rate This Book</p>
                         <p>Tell us what you think</p>
                         {showInput ? 
-                            (   <div>
+                            (   <div className=" flex flex-col space-y-5">
                                     <Rating className="flex"
                                         onChange={(ev) => setRate(ev.target.value)}/>
                                     <input 
                                         type="text" 
-                                        className="border-2 rounded-xl px-4 py-1 w-full p-3"
-                                        onChange={(ev) => setComment( ev.target.value)}
-                                        onKeyUp={(ev) => sendComment(ev)} />
+                                        className="border-2 rounded-xl px-4 py-1 w-1/2 p-3"
+                                         />
                                 </div>) 
                             : (
                                 <div className={`flex justify-between`}>

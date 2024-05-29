@@ -7,6 +7,7 @@ import Footer from "../Footer";
 
 import gambar from "../assets/Mask.png";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 
 let slide = [
@@ -32,6 +33,11 @@ export default function Beranda() {
   }
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const kategoriPage = (type) => {
+    window.location.href = '/Kategori'
+    localStorage.setItem('kategori',JSON.stringify(type));
+  }
 
     useEffect(() => {
       const user = localStorage.getItem("user")
@@ -63,31 +69,27 @@ export default function Beranda() {
       
       {/* icon category */}
       <div className=" mt-8">
-        <div className=" bg-blue-100 mx-56 flex justify-around text-center font-medium">
-          <div>
-            <div>icon img</div>
+        <div className="mx-56 grid grid-cols-5 gap-10 text-center font-medium">
+          <button onClick={() => kategoriPage('agama')} className="bg-blue-100 rounded-lg p-5">
+            <img className="mx-auto" src="iconTa/image 8.png"/>
             <p> Religi</p>
-          </div>
-          <div>
-            <div>icon img</div>
-            <p> Game & aktifitas </p>
-          </div>
-          <div>
-            <div>icon img</div>
-            <p>Desain</p>
-          </div>
-          <div>
-            <div>icon img</div>
+          </button>
+          <button onClick={() => kategoriPage('Game')} className="bg-blue-100 rounded-lg p-5">
+          <img className="mx-auto" src="iconTa/image 7.png"/>
+            <p className=" ">Game & aktifitas</p>
+          </button>
+          <button onClick={() => kategoriPage('pelajaran')} className="bg-blue-100 rounded-lg p-5">
+          <img className="mx-auto" src="iconTa/image 10.png"/>
             <p> Matematika </p>
-          </div>
-          <div>
-            <div>icon img</div>
+          </button>
+          <button onClick={() => kategoriPage('fiksi')} className="bg-blue-100 rounded-lg p-5">
+          <img className="mx-auto" src="iconTa/image 11.png"/>
             <p> fiksi </p>
-          </div>
-          <div>
-            <div>icon img</div>
+          </button>
+          <button onClick={() => kategoriPage('aktivitas')} className="bg-blue-100 rounded-lg p-5">
+          <img className="mx-auto" src="iconTa/image 12.png"/>
             <p> Comic </p>
-          </div>
+          </button>
         </div>
       </div>
       {/* Text Persuasi */}
@@ -95,7 +97,9 @@ export default function Beranda() {
         <div className=" text-black font-bold text-center text-xl pt-11">
           <p>Rekomendasi Nih Buat Kamu 🔥</p>
         </div>
-        <p className=" ml-[85%] text-gray-400 mt-4 font-medium text-md">Lihat Semua</p>
+        <Link to='/Rekomendasi'>
+          <p className=" ml-[85%] text-gray-400 mt-4 font-medium text-md">Lihat Semua</p>
+        </Link>
       </div>
       {/* Carosel Barang Wrapper*/}
       <div className=" mt-6">
@@ -105,6 +109,7 @@ export default function Beranda() {
                 <Barang 
                   buku ={item}
                   cover = {item.cover_buku}
+                  nama = {item.nama_buku}
                   author = {item.author_buku}
                   title = {item.nama_buku}
                   stok = {item.stok_buku}
@@ -128,6 +133,7 @@ export default function Beranda() {
                   <Barang 
                     buku ={item}
                     cover = {item.cover_buku}
+                    nama = {item.nama_buku}
                     author = {item.author_buku}
                     title = {item.nama_buku}
                     stok = {item.stok_buku}

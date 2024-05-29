@@ -91,17 +91,14 @@ class Regis extends React.Component {
         </button>
         <div className="flex justify-center">
           {/*bagian kanan*/}
-        <div className="w-auto mx-5 ">
-          <div className="p-5 text-center">
+        <div className="w-1/2 mx-5 ">
+          <div className="px-5 text-center">
             {/* nama website */}
           <p className="mb-20 text-5xl font-bold">
             BUKU <span className=" text-orange-300">KU</span>
           </p>
           {/* header */}
           <p className="font-bold text-4xl">Create Account</p>
-          <p>
-            lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum
-          </p>
           <form>
             {/* input nama */}
             <div className="my-5 text-left">
@@ -186,18 +183,7 @@ class Regis extends React.Component {
           <button className={`bg-[#3B82F6] w-full p-3 rounded-lg mb-2`} onClick={this.checkUsername? null : this.regis} >
             <p className="text-white ">Sign In</p>
           </button>
-          <div className="flex mb-2 ">
-            <hr className="w-1/2"/>
-            <p className=" text-[#E5E5E5] text-center">Or</p>
-            <hr className="w-1/2"/>
-          </div>
           {/*sign google*/}
-          <button className="border-2 border-[#E5E5E5] w-full p-3 rounded-lg">
-            <div className="flex justify-center">
-              <img src={google} className="w-6 mr-1" />
-              <p className="">Login With Google</p>
-            </div>
-          </button>
           </div>
           <div className="flex justify-center">
             <p className="mt-5 text-center">Already Have Account? </p>

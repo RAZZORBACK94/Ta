@@ -13,7 +13,7 @@ export default function Account () {
 
     const data = JSON.parse(localStorage.getItem('user'))
 
-    const[user,setUser] = useState(data)
+    const[user,setUser] = useState(data.data)
 
     const[nama,setNama] = useState()
     const[alamat,setAlamat] = useState()
@@ -24,8 +24,6 @@ export default function Account () {
     
 
     const[editOpen, setEditOpen] = useState(false)
-
-    console.log(jK);
 
     
 
@@ -41,11 +39,23 @@ export default function Account () {
     const save = () => {
         const userdata = JSON.parse(localStorage.getItem('user'))
         const userId = userdata.data.id
-            
-       const url = `http://localhost:5000/user/findId/${userId}`
-       axios.put(url,{},{headers:{Authorization: `Bearer ${userdata.tkn}`}})
+
+        const data = {
+            nama_user : nama,
+            jk_user: jK,
+            alamat_user: alamat, 
+            telepon_user: telepon,
+            username_user: username,
+            role_user: 'pengguna',
+            password_user: password
+        }
+
+       const url = `http://localhost:5000/user/update/${userId}`
+       axios.put(url,data,{headers:{Authorization: `Bearer ${userdata.tkn}`}})
        .then((response) => {
         alert(response.data.message)
+        setUser(response.data.data)
+        toggleEdit()
        })
        .catch((error) => {
         console.log(error);

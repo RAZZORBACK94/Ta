@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import Barang from "../assets/barang.componet";
+import Barang from "../component/assets/barang.componet";
 import axios from "axios";
-import Navbar from "../Navbar";
-import Footer from "../Footer";
+import Navbar from "../component/Navbar";
+import Footer from "../component/Footer";
+import { FaArrowLeft } from "react-icons/fa";
 
 
 export default function Kategori() {
@@ -14,13 +15,16 @@ export default function Kategori() {
   const [maksimum, setMaksimum] = useState(0);
 
 
+  const kategori = JSON.parse(localStorage.getItem('kategori'))
+
 
   const dataBuku = () => {
     const user = JSON.parse(localStorage.getItem("user"))
+    const kategori = JSON.parse(localStorage.getItem('kategori'))
 
-    let url = "http://localhost:5000/buku/getAll"
+    let url = "http://localhost:5000/buku/getBukubyKategori"
 
-    axios.get(url, {headers : {authorization : "Bearer " + user.tkn }})
+    axios.post(url,{kategori})
     .then(response => {
       setVarBuku(response.data.data)
       setFilterBuku(response.data.data)   
@@ -43,6 +47,11 @@ export default function Kategori() {
     }
     console.log(stok)
   };
+
+  const backPage = () =>{
+    window.history.back();
+    localStorage.removeItem("kategori");
+}
   
 
    
@@ -107,7 +116,11 @@ export default function Kategori() {
   return (
     <div className="">
       <Navbar/>
-      <div className="flex space-x-10 my-40 ml-20 mr-10">
+      <button className="ml-20 mt-40 w-max p-4 rounded-lg shadow-lg mb-5" onClick={backPage}>
+        <FaArrowLeft/>
+      </button>
+      <p className=" my-10 text-center font-bold text-3xl">Kategori {kategori}</p>
+      <div className="flex space-x-10 mb-40 ml-20 mr-10">
         {/* tab filter */}
         <form className=" w-4/6 bg-[#F1F8FF] py-10 px-7 flex flex-col space-y-4 rounded-2xl"
           onKeyUp={(e) => filter(e)}

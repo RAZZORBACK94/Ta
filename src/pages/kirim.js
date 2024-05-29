@@ -13,7 +13,7 @@ export default function Kirim() {
   if (localStorage.getItem("cart") !== null) {
     tempCart = JSON.parse(localStorage.getItem("cart"));
   }
-  let userData = JSON.parse(localStorage.getItem("user"));
+  const userData = JSON.parse(localStorage.getItem("user"));
 
   const [user,setuser] =useState(userData)
   const [totalHarga, setTotalHarga] = useState(0);
@@ -21,13 +21,17 @@ export default function Kirim() {
   const [alamat, setAlamat] = useState(user.alamat_user); // State variable to control visibility
   const navigate = useNavigate();
 
-  const buku = JSON.parse(localStorage.getItem("coba3"))
+  const buku = JSON.parse(localStorage.getItem("coba2"))
     const keranjang = JSON.parse(localStorage.getItem("coba1"))
 
   
   const toggleInput = () => {
     setShowInput((prevState) => !prevState); // Function to toggle input visibility
   };
+
+  const backPage = () =>{
+    window.history.back();
+}
 
   const calculateTotalHarga = () => {
     let total = 0;
@@ -39,53 +43,34 @@ export default function Kirim() {
 
   
 
-     const gantiAlamat = (event,id) => {
-      event.preventDefault();
-      
-        if (event.keyCode === 13) {
-          let url = `http://localhost:5000/user/update/${id}`
+  const gantiAlamat = (e) => {
+    alert('jij')
+    if (e.keycode === 13) {
+      alert('panggil')
+      const userdata = JSON.parse(localStorage.getItem('user'))
+    const userId = userdata.data.id
 
-          alert('success call')
+    const data = {
+        nama_user :user.nama_user,
+        jk_user: user.jK_user,
+        alamat_user: alamat,
+        telepon_user: user.telepon_user,
+        username_user: user.username_user,
+        role_user:'pengguna',
+        password_user: user.password_user
+    }
 
-          const data = user.data;
-          data.alamat_user = alamat
-
-          const headers = {
-            Authorization: `Bearer ${user.tkn}`, // Use template literal and backticks
-          };
-
-          axios.put(url,data,{headers})
-          .then((response) => {
-            alert(response.data.message)
-            url = `http://localhost:5000/user/find/${id}`
-
-            const headers = {
-              Authorization: `Bearer ${user.tkn}`, // Use template literal and backticks
-            };
-            axios.get(url,{headers})
-            .then((response) => {
-              setuser(response.data.data)
-            })
-            .catch((error) => {
-              console.error(error);
-            })
-          })
-          .catch((error) => {
-            console.error(error);
-          })
-          // const updateUser = {...user.data}
-          // alert(JSON.stringify(updateUser))
-          // window.alert(`call user success`)
-          // updateUser.alamat_user = alamat
-          // window.alert(`modify user success success`)
-          // localStorage.setItem("alamat", JSON.stringify(updateUser.alamat_user))
-          // window.alert(`alamat input is ${alamat}`)
-          // setuser(updateUser)
-          // window.alert(`set success`)
-          // localStorage.setItem("user", JSON.stringify(updateUser))
-          // window.alert(`local success`)
-        }
-     }
+   const url = `http://localhost:5000/user/update/${userId}`
+   axios.post(url,data,{headers:{Authorization: `Bearer ${userdata.tkn}`}})
+   .then((response) => {
+    alert(response.data.message)
+    setuser(response.data.data)
+   })
+   .catch((error) => {
+    console.log(error);
+   })
+    }
+}
 
     const pay = async() => {
       const data = JSON.parse(localStorage.getItem("user"))
@@ -127,7 +112,21 @@ export default function Kirim() {
     }
 
      useEffect(() => {
+      const data = () => {
+        const user = JSON.parse(localStorage.getItem('user'))
+        const url = `http://localhost:5000/user/findId/${user.data.id}`
+        axios.get(url)
+        .then((response) => {
+          setuser(response.data.data)
+        })
+        .catch((error) => {
+          console.error(error);
+        })
+      }
+
+      data()
       calculateTotalHarga()
+      
 
 
       const src = "https://app.sandbox.midtrans.com/snap/snap.js"
@@ -153,7 +152,7 @@ export default function Kirim() {
       <div className=" flex flex-col space-y-5 mt-40 m-5 p-5">
         
         {/* back button */}
-        <button className=" w-max p-4 rounded-lg shadow-lg mb-5">
+        <button onClick={() => backPage} className=" w-max p-4 rounded-lg shadow-lg mb-5">
           <FaArrowLeft/>
         </button>
 
@@ -172,10 +171,10 @@ export default function Kirim() {
                   className="border-2 rounded-xl px-4 py-1 w-full p-3"
                   
                   onChange={(ev) => setAlamat( ev.target.value)}
-                  onKeyUp={(ev) => gantiAlamat(ev,user.data.id)} />) 
+                  onKeyUp={(ev) => gantiAlamat(ev)} />) 
                 : (
                     <div className=" flex-col space-y-5">
-                      <p>{user.data.alamat_user}</p>
+                      <p>{user.alamat_user}</p>
                       <button className="flex items-center space-x-5 rounded-xl border-2 hover:bg-sky-500 w-max px-4 py-1 hover:text-white" onClick={toggleInput}>
                         <LuMapPin />
                         <p className="font-bold text-base">Ganti Alamat</p>
@@ -194,7 +193,7 @@ export default function Kirim() {
                 <div className=" flex justify-between">
                   <div className="flex items-start space-x-8">
 
-                    <img src={item.cover_buku} alt="cover" className="w-[]82p h-[126px] rounded-lg"/>
+                    <img src={`http://localhost:5000/cover/${item.cover_buku}`} alt="cover" className="w-[]82p h-[126px] rounded-lg"/>
 
                     <div>
                       <p className=" text-2xl font-semibold">{item.nama_buku}</p>
