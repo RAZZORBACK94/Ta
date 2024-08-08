@@ -61,25 +61,19 @@ class Carts extends Component {
                 <th className="border px-4 py-2 text-left">ID User</th>
                 <th className="border px-4 py-2 text-left">Total Transaksi</th>
                 <th className="border px-4 py-2 text-left">Status</th>
-                <th className="border px-4 py-2 text-left">ID Buku</th>
-                <th className="border px-4 py-2 text-left">Quantity</th>
-                <th className="border px-4 py-2 text-left">Price</th>
               </tr>
             </thead>
             <tbody>
               {carts ? (
                 cartsDetails.length > 0 ? (
-                  cartsDetails.map((detail, index) => (
+                  carts.map((detail, index) => (
                     <tr key={index}>
-                      <td className="border px-4 py-2">{carts[index].id}</td>
-                      <td className="border px-4 py-2">{carts[index].id_user}</td>
+                      <td className="border px-4 py-2">{detail.id}</td>
+                      <td className="border px-4 py-2">{detail.id_user}</td>
                       <td className="border px-4 py-2">
-                        {carts[index].total_transaksi}
+                        {detail.total_transaksi}
                       </td>
-                      <td className="border px-4 py-2">{carts[index].status}</td>
-                      <td className="border px-4 py-2">{detail.id_buku}</td>
-                      <td className="border px-4 py-2">{detail.qty}</td>
-                      <td className="border px-4 py-2">{detail.total}</td>
+                      <td className="border px-4 py-2">{detail.status}</td>
                     </tr>
                   ))
                 ) : (

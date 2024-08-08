@@ -297,106 +297,107 @@ class User extends Component {
           </table>
 
           {this.state.showModal && (
-            <div className="modal">
-              <div className="modal-content">
-                <span className="close" onClick={() => this.setState({ showModal: false })}>
-                  &times;
-                </span>
-                <form onSubmit={this.SaveUser}>
-                  <div className="form-group">
-                    <label>ID</label>
-                    <input
-                      type="text"
-                      name="id"
-                      value={this.state.id}
-                      onChange={this.bind}
-                      className="form-control"
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Nama</label>
-                    <input
-                      type="text"
-                      name="nama_user"
-                      value={this.state.nama_user}
-                      onChange={this.bind}
-                      className="form-control"
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Jenis Kelamin</label>
-                    <input
-                      type="text"
-                      name="jk_user"
-                      value={this.state.jk_user}
-                      onChange={this.bind}
-                      className="form-control"
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Alamat</label>
-                    <input
-                      type="text"
-                      name="alamat_user"
-                      value={this.state.alamat_user}
-                      onChange={this.bind}
-                      className="form-control"
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Telepon</label>
-                    <input
-                      type="text"
-                      name="telepon_user"
-                      value={this.state.telepon_user}
-                      onChange={this.bind}
-                      className="form-control"
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Username</label>
-                    <input
-                      type="text"
-                      name="username_user"
-                      value={this.state.username_user}
-                      onChange={this.bind}
-                      className="form-control"
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Password</label>
-                    <input
-                      type="password"
-                      name="password_user"
-                      value={this.state.password_user}
-                      onChange={this.bind}
-                      className="form-control"
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Role</label>
-                    <input
-                      type="text"
-                      name="role_user"
-                      value={this.state.role_user}
-                      onChange={this.bind}
-                      className="form-control"
-                      required
-                    />
-                  </div>
-                  <button type="submit" className="btn btn-primary">
-                    Save
-                  </button>
-                </form>
-              </div>
+            <div
+            className="modal fixed inset-0 flex items-center justify-center z-50"
+            style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+          >
+            <div className="modal-content bg-white w-1/2 p-5 rounded-xl">
+              <h5 className="modal-title text-lg font-bold mb-3">
+                Form User
+              </h5>
+              <form onSubmit={this.SaveUser}>
+                <div className="form-group mb-3">
+                  <label>Nama</label>
+                  <input
+                    type="text"
+                    className="form-control border rounded-lg pl-3 py-1 w-full"
+                    name="nama_user"
+        
+                    onChange={this.bind}
+                    required
+                  />
+                </div>
+                <div className="form-group mb-3">
+                  <label>Jenis Kelamin</label>
+                  <input
+                    type="text"
+                    className="form-control border rounded-lg pl-3 py-1 w-full"
+                    name="jk_user"
+        
+                    onChange={this.bind}
+                    required
+                  />
+                </div>
+                <div className="form-group mb-3">
+                  <label>Alamat</label>
+                  <input
+                    type="text"
+                    className="form-control border rounded-lg pl-3 py-1 w-full"
+                    name="alamat_user"
+        
+                    onChange={this.bind}
+                    required
+                  />
+                </div>
+                <div className="form-group mb-3">
+                  <label>Telepon</label>
+                  <input
+                    type="text"
+                    className="form-control border rounded-lg pl-3 py-1 w-full"
+                    name="telepon_user"
+        
+                    onChange={this.bind}
+                    required
+                  />
+                </div>
+                <div className="form-group mb-3">
+                  <label>Username</label>
+                  <input
+                    type="text"
+                    className="form-control border rounded-lg pl-3 py-1 w-full"
+                    name="username_user"
+        
+                    onChange={this.bind}
+                    required
+                  />
+                </div>
+                <div className="form-group mb-3">
+                  <label>Password</label>
+                  <input
+                    type="password"
+                    className="form-control border rounded-lg pl-3 py-1 w-full"
+                    name="password_user"
+        
+                    onChange={this.bind}
+                    required
+                  ></input>
+                </div>
+                <div className="form-group mb-3">
+                  <label>Role</label>
+                  <input
+                    type="text"
+                    className="form-control border rounded-lg pl-3 py-1 w-full"
+                    name="role_user"
+        
+                    onChange={this.bind}
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mr-2"
+                >
+                  Simpan
+                </button>
+                <button
+                  type="button"
+                  className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-full"
+                  onClick={() => this.setState({ showModal: false })}
+                >
+                  Batal
+                </button>
+              </form>
             </div>
+          </div>
           )}
         </div>
       </div>

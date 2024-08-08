@@ -73,8 +73,12 @@ class Buku extends Component {
           headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}` },
         })
         .then((response) => {
-          alert(response.data.message);
+          if (response.data.success == true) {
+            alert(response.data.message);
           this.getBukus();
+          } else{
+            alert('buku tidak bisa dihapus karena telah dilakukan transaksi')
+          }
         })
         .catch((error) => {
           console.log(error);
